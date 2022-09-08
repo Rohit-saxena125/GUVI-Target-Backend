@@ -19,27 +19,33 @@ const userSchema = new mongooose.Schema({
   confirmpassword: {
     type: String,
     required: true,
-  },
-  age: {
-    type: Number,
-  },
-  dob: {
-    type: Date,
-  },
-  gender: {
-    type: String
-  },
-  phone: {
-    type: Number,
   }
 });
+const userSchema1 = new mongooose.Schema({
+    id:{
+        type:Number,
+    },
+    age: {
+      type: Number,
+    },
+    dob: {
+      type: Date,
+    },
+    gender: {
+      type: String
+    },
+    phone: {
+      type: Number,
+    }
+  });
 const User = new mongooose.model("USER", userSchema);
+const User1 = new mongooose.model("USER1", userSchema1);
 const port = process.env.PORT || 9000;
 require("./db/conn");
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded());
-app.post('/login',(req,res)=>{
+app.post('/login',(req,res,next)=>{
     const {email,password} = req.body;
     User.findOne({email:email},(err,user)=>{
         if(err){
@@ -57,6 +63,7 @@ app.post('/login',(req,res)=>{
             res.send({message:"Invalid Email"});
         }
     });
+
 }
 );
 app.post("/signup",(req,res)=>{
@@ -76,7 +83,8 @@ app.post("/signup",(req,res)=>{
                 confirmpassword
             });
             user.save().then(()=>{
-                res.send({message:"User Created logi now"});
+                res.send({message:"User Created"});
+                res.redirect('/login')
             }).catch((err)=>{
                 res.send(err);
             });
@@ -84,16 +92,25 @@ app.post("/signup",(req,res)=>{
     });
 });
 app.post('/additionalDetails',(req,res)=>{
-    const {email,age,dob,gender,phone} = req.body;
-    User.findOne({email:email},(err,user)=>{
+    const {age,dob,gender,phone} = req.body;
+    User1.findOne({id:id},(err,user)=>{
         if(err){
             res.send(err);
         }
-        if(user){
-            user.age = age;
-            user.dob = dob;
-            user.gender = gender;
-            user.phone = phone;
+        if(user)
+        {
+            res.send({message:"User Already Exists"});
+        }
+        else
+        {
+            const user = new User1({
+               id,
+               age,
+                dob,
+                gender,
+                phone
+            });
+            
             user.save().then(()=>{
                 res.send({message:"Details Added"});
             }
@@ -102,7 +119,9 @@ app.post('/additionalDetails',(req,res)=>{
             }
             );
         }
+        id +=1;
     });
+    
 });
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
