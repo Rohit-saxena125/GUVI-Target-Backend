@@ -102,9 +102,6 @@ app.post('/additionalDetails',(req,res)=>{
             }
             );
         }
-        else{
-            res.send({message:"User Not Found"});
-        }
     });
 });
 app.listen(port,()=>{
