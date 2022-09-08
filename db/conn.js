@@ -3,7 +3,6 @@ const DB = process.env.DATABASE;
 mongoose.connect("mongodb://localhost:27017/Details",{
     useNewUrlParser:true,
     useUnifiedTopology:true,
-    // useCreateIndex:true
 }
 ).then(()=>{
     console.log("connection successful");
