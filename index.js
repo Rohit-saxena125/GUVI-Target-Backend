@@ -97,7 +97,7 @@ app.post("/signup",(req,res)=>{
 app.post('/additionalDetails',(req,res)=>{
     try{
     const {username,age,dob,gender,phone} = req.body;
-    User.findOne({username:username},(err,user)=>{
+    User.findOne({email:email},(err,user)=>{
         if(err){
             res.send(err);
         }
