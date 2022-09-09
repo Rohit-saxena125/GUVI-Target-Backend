@@ -40,6 +40,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded());
 app.post('/login',(req,res,next)=>{
+    try{
     const {email,password} = req.body;
     User.findOne({email:email},(err,user)=>{
         if(err){
@@ -48,6 +49,7 @@ app.post('/login',(req,res,next)=>{
         if(user){
             if(user.password === password){
                 res.send({message:"Login Successfull"});
+                res.redirect('/additionalDetails')
             }
             else{
                 res.send({message:"Invalid Password"});
@@ -56,11 +58,15 @@ app.post('/login',(req,res,next)=>{
         else{
             res.send({message:"Invalid Email"});
         }
-    });
+    });}
+    catch(err){
+        res.send(err);
+    }
 
 }
 );
 app.post("/signup",(req,res)=>{
+    try{
     const {username,email,password,confirmpassword} = req.body;
     User.findOne({email:email},(err,user)=>{
         if(err){
@@ -83,11 +89,15 @@ app.post("/signup",(req,res)=>{
                 res.send(err);
             });
        }
-    });
+    });}
+    catch(err){
+        res.send(err);
+    }
 });
 app.post('/additionalDetails',(req,res)=>{
-    const {email,age,dob,gender,phone} = req.body;
-    User.findOne({email:email},(err,user)=>{
+    try{
+    const {username,age,dob,gender,phone} = req.body;
+    User.findOne({username:username},(err,user)=>{
         if(err){
             res.send(err);
         }
@@ -107,7 +117,11 @@ app.post('/additionalDetails',(req,res)=>{
         else{
             res.send({message:"User Not Found"});
         }
-    });
+    });}
+    catch(err)
+    {
+        res.send(err);
+    }
 });
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
